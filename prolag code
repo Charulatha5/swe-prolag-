@@ -1,0 +1,347 @@
+1)Write a Prolog Program to Sum the Integers from 1 to n
+sum_integers(1, 1).
+sum_integers(N, Sum) :-
+    N > 1,
+    N1 is N - 1,
+    sum_integers(N1, SubSum),
+    Sum is SubSum + N.
+output:
+?- sum_integers(5, Sum).
+2)Write a Prolog Program for A DB WITH NAME, DOB.
+% Define facts for name and date of birth (DOB) of individuals.
+dob(john, '1990-05-15').
+dob(amy, '1985-09-22').
+dob(michael, '1998-03-10').
+dob(susan, '1976-11-30').
+dob(emma, '2004-07-12').
+
+% Query to find the DOB of a person.
+get_dob(Name, DOB) :- dob(Name, DOB).
+output:
+?- get_dob(john, DOB).
+3)Write a Prolog Program for STUDENT-TEACHER-SUB-CODE.
+% Define facts for students, teachers, and subjects with codes.
+student(john, 101).
+student(lisa, 102).
+student(mike, 103).
+student(amy, 104).
+
+teacher(prof_smith, 201).
+teacher(prof_jones, 202).
+teacher(prof_davis, 203).
+teacher(prof_brown, 204).
+
+subject(math, 301).
+subject(history, 302).
+subject(science, 303).
+subject(english, 304).
+
+% Define a predicate to associate students, teachers, and subjects.
+teaches(prof_smith, math).
+teaches(prof_jones, history).
+teaches(prof_davis, science).
+teaches(prof_brown, english).
+
+enrolled(john, math).
+enrolled(lisa, history).
+enrolled(mike, science).
+enrolled(amy, english).
+output:
+?- student(john, StudentCode).
+4)Write a Prolog Program for PLANETS DB
+% Define facts for planets with properties.
+planet(mercury, 1, 0.39, 4879).
+planet(venus, 2, 0.72, 12104).
+planet(earth, 3, 1.00, 12742).
+planet(mars, 4, 1.52, 6779).
+planet(jupiter, 5, 5.20, 139820).
+planet(saturn, 6, 9.58, 116460).
+planet(uranus, 7, 19.18, 50724).
+planet(neptune, 8, 30.05, 49244).
+
+% Define a predicate for classifying planets based on their distance from the sun.
+classify_planet(Name, Classification) :-
+    planet(Name, Order, _, _),
+    (Order < 4, Classification = inner);
+    (Order >= 4, Order =< 8, Classification = outer).
+output:
+?- planet(earth, Order, Distance, Diameter).
+?- classify_planet(venus, Classification).
+5)Write a Prolog Program to implement Towers of Hanoi.
+% Define the Hanoi predicate with three arguments: the number of discs to move (N), the source peg (A),
+% the auxiliary peg (B), and the target peg (C).
+hanoi(1, A, _, C) :-
+    write('Move disk from '), write(A), write(' to '), write(C), nl.
+
+hanoi(N, A, B, C) :-
+    N > 1,
+    N1 is N - 1,
+    hanoi(N1, A, C, B),  % Move N-1 discs from A to B using C as auxiliary peg.
+    hanoi(1, A, _, C),  % Move the largest disc from A to C.
+    hanoi(N1, B, A, C).  % Move N-1 discs from B to C using A as auxiliary peg.
+
+% To start the Towers of Hanoi with 3 discs, use the following query:
+% hanoi(3, 'A', 'B', 'C').
+output:
+?- hanoi(3, 'A', 'B', 'C').
+6)Write a Prolog Program to print particular bird can fly or not. Incorporate required queries
+% Define facts for birds that can fly.
+can_fly(eagle).
+can_fly(sparrow).
+can_fly(pigeon).
+
+% Define facts for birds that cannot fly.
+cannot_fly(penguin).
+cannot_fly(ostrich).
+
+% Define a predicate to check if a bird can fly.
+can_bird_fly(Bird) :- can_fly(Bird).
+can_bird_fly(Bird) :- \+ cannot_fly(Bird).
+output:
+?- can_bird_fly(eagle).
+?- can_bird_fly(penguin).
+7)Write the prolog program to implement family tree
+% Define facts for family members.
+male(john).
+male(alex).
+male(mike).
+male(bob).
+female(lisa).
+female(emma).
+female(susan).
+female(jane).
+
+% Define parent-child relationships.
+parent(john, alex).
+parent(john, lisa).
+parent(alex, mike).
+parent(susan, mike).
+parent(lisa, emma).
+parent(bob, jane).
+parent(jane, emma).
+
+% Define sibling relationships.
+sibling(X, Y) :-
+    parent(Z, X),
+    parent(Z, Y),
+    X \= Y.
+
+% Define rules for different types of relationships.
+father(X, Y) :- male(X), parent(X, Y).
+mother(X, Y) :- female(X), parent(X, Y).
+grandparent(X, Z) :- parent(X, Y), parent(Y, Z).
+grandfather(X, Z) :- male(X), grandparent(X, Z).
+grandmother(X, Z) :- female(X), grandparent(X, Z).
+sibling(X, Y) :- sibling(Y, X), X @< Y. % To avoid duplicate results.
+output:
+?- father(john, alex).
+?- sibling(mike, lisa).
+8)Write a Prolog Program to suggest Dieting System based on Disease
+% Define facts for diseases and their dietary restrictions.
+disease(diabetes, 'Limit sugar and carbohydrates. Increase fiber intake.').
+disease(hypertension, 'Reduce sodium intake. Increase potassium-rich foods.').
+disease(high_cholesterol, 'Limit saturated fats. Increase fiber and omega-3 fatty acids.').
+disease(celiac_disease, 'Avoid gluten-containing foods like wheat, barley, and rye.').
+disease(vegetarian, 'Follow a plant-based diet. Avoid meat and animal products.').
+
+% Define a predicate to suggest a diet based on a disease.
+suggest_diet(Person, Disease, Diet) :-
+    disease(Disease, Diet),
+    write('For '), write(Person), write(', with '), write(Disease), nl,
+    write('Suggested Diet: '), write(Diet), nl.
+
+% Example queries:
+% suggest_diet('John', diabetes, Diet).
+% suggest_diet('Alice', vegetarian, Diet).
+output:
+?- suggest_diet('John', diabetes, Diet).
+9)Write a Prolog program to implement Monkey Banana Problem
+% Define initial state and goals.
+initial_state(at(door), on_floor, at(banana), has_not).
+
+% Define possible actions the monkey can take.
+action(grab, on_floor, at(banana), has_not, has).
+action(climb, on_floor, at(X), has, on_box) :- box(X).
+action(push(X), on_floor, at(X), has, on_floor) :- box(X).
+action(walk, on_floor, at(X), has, on_floor) :- not(at(door, X)).
+
+% Define the goal state.
+goal_state(_, _, _, has).
+
+% Define state transition rules.
+satisfies(go(S, A, S1), state(S), action(A), state(S1)).
+
+% Define path and goal-checking predicates.
+path(State, [], State).
+path(State, [Action | Actions], FinalState) :-
+    satisfies(go(State, Action, NextState), State, Action, NextState),
+    path(NextState, Actions, FinalState).
+
+goal_reached(State) :- goal_state(State, _, _, has).
+
+% Example query to solve the Monkey and Banana Problem:
+% path(initial_state(at(door), on_floor, at(banana), has_not), Actions, Goal), goal_reached(Goal).
+output:
+?- path(initial_state(at(door), on_floor, at(banana), has_not), Actions, Goal), goal_reached(Goal).
+10)Write a Prolog Program for fruit and its color using Back Tracking.
+% Define facts about fruits and their colors.
+fruit(apple, red).
+fruit(banana, yellow).
+fruit(grape, purple).
+fruit(orange, orange).
+fruit(strawberry, red).
+fruit(blueberry, blue).
+fruit(watermelon, green).
+fruit(kiwi, brown).
+
+% Define a rule to check if a fruit is a specific color.
+is_color(Fruit, Color) :- fruit(Fruit, Color).
+
+% Define a predicate to find fruits of a specific color using backtracking.
+find_fruit(Color, Fruits) :-
+    findall(Fruit, is_color(Fruit, Color), Fruits).
+
+% Example queries:
+% Find all fruits that are red.
+% find_fruit(red, RedFruits).
+%
+% Find all fruits that are yellow.
+% find_fruit(yellow, YellowFruits).
+output:
+?- find_fruit(red, RedFruits).
+11)Write a Prolog Program to implement Best First Search algorithm
+% Define the graph and heuristic values (h values).
+% Graph represented as edges and their costs.
+edge(a, b, 5).
+edge(a, c, 10).
+edge(b, d, 7).
+edge(c, d, 2).
+edge(d, e, 3).
+edge(c, e, 8).
+
+% Heuristic values (h values) for each node to the goal node 'e'.
+heuristic(a, 12).
+heuristic(b, 7).
+heuristic(c, 8).
+heuristic(d, 2).
+heuristic(e, 0).
+
+% Best First Search
+best_first_search(Start, Goal) :- 
+    best_first_search([[Start, [Start], 0]], Goal).
+
+% If the current node is the goal, return the path.
+best_first_search([[Goal, Path, Cost] | _], Goal) :-
+    reverse(Path, ReversePath),
+    format('Solution Path: ~w~n', [ReversePath]).
+
+% Explore the next node with the lowest estimated cost (f value).
+best_first_search(Queue, Goal) :-
+    min_f(Queue, [Node, Path, Cost], RestQueue),
+    findall([Next, [Next | Path], NewCost],
+            (edge(Node, Next, EdgeCost),
+             \+ member(Next, Path),
+             heuristic(Next, H),
+             NewCost is Cost + EdgeCost + H),
+            Children),
+    append(Children, RestQueue, NewQueue),
+    best_first_search(NewQueue, Goal).
+
+% Find the node with the minimum estimated cost (f value).
+min_f([Node | RestQueue], MinNode, RestQueueMin) :-
+    min_f(RestQueue, Node, MinNode, RestQueueMin).
+
+min_f([], MinNode, MinNode, []).
+min_f([[Node, Path, Cost] | RestQueue], [MinNode, MinPath, MinCost], Result, [Node | RestQueueMin]) :-
+    (Cost < MinCost ->
+        min_f(RestQueue, [Node, Path, Cost], Result, RestQueueMin);
+    min_f(RestQueue, [MinNode, MinPath, MinCost], Result, [Node | RestQueueMin])).
+
+% Example query:
+% best_first_search(a, e).
+12)Write the prolog program for Medical Diagnosis
+% Define some example symptoms and conditions.
+symptom(feeling_fatigue).
+symptom(fever).
+symptom(cough).
+symptom(headache).
+symptom(chest_pain).
+symptom(rash).
+symptom(abdominal_pain).
+
+condition(cold, [fever, cough, headache]).
+condition(flu, [fever, cough, fatigue]).
+condition(allergy, [rash, fatigue]).
+condition(pneumonia, [fever, cough, chest_pain]).
+condition(food_poisoning, [abdominal_pain, fatigue]).
+
+% Define a rule for diagnosing a condition based on symptoms.
+diagnose(Condition, Symptoms) :-
+    condition(Condition, ConditionSymptoms),
+    subset(ConditionSymptoms, Symptoms).
+
+subset([], _).
+subset([H|T], List) :-
+    member(H, List),
+    subset(T, List).
+
+% Example query:
+% diagnose(Condition, [fever, cough, headache]).
+output:
+?- diagnose(Condition, [fever, cough, headache]).
+13)Write a Prolog Program for forward Chaining. Incorporate required querie
+% Define facts.
+has_fur(tiger).
+has_feathers(bird).
+can_fly(bird).
+lays_eggs(bird).
+has_scales(fish).
+swims(fish).
+
+% Define rules for inferring new information.
+mammal(X) :- has_fur(X).
+mammal(X) :- gives_milk(X).
+bird(X) :- has_feathers(X), lays_eggs(X), can_fly(X).
+reptile(X) :- has_scales(X), lays_eggs(X), not(mammal(X)).
+fish(X) :- has_scales(X), lays_eggs(X), not(mammal(X)), not(bird(X)).
+
+% Query to perform forward chaining and infer new information.
+inferred_mammal(X) :- mammal(X).
+inferred_bird(X) :- bird(X).
+inferred_reptile(X) :- reptile(X).
+inferred_fish(X) :- fish(X).
+
+% Example queries to see inferred information.
+% Query to find mammals.
+% ?- inferred_mammal(X).
+%
+% Query to find birds.
+% ?- inferred_bird(X).
+%
+% Query to find reptiles.
+% ?- inferred_reptile(X).
+%
+% Query to find fish.
+% ?- inferred_fish(X).
+14)Write a Prolog Program for backward Chaining. Incorporate required querie% Define facts.
+has_feathers(bird).
+can_fly(bird).
+lays_eggs(bird).
+has_scales(fish).
+swims(fish).
+
+% Define rules for inferring new information.
+bird(X) :- has_feathers(X), lays_eggs(X), can_fly(X).
+
+% Define a goal for backward chaining.
+is_bird(X) :- bird(X).
+
+% Example queries to use backward chaining to find if an animal is a bird.
+% Query to determine if a bird can fly.
+% ?- is_bird(X).
+%
+% Query to find animals that have feathers.
+% ?- has_feathers(X), is_bird(X).
+%
+% Query to find animals that lay eggs and can fly.
+% ?- lays_eggs(X), can_fly(X), is_bird(X).
